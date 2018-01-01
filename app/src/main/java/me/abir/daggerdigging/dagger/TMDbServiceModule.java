@@ -17,12 +17,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TMDbServiceModule {
 
     @Provides
+    @TMDbAppScope
     public TMDbService tmdbService(Retrofit retrofit) {
 
         return retrofit.create(TMDbService.class);
     }
 
     @Provides
+    @TMDbAppScope
     public Retrofit retrofit(OkHttpClient okHttpClient, Gson gson) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))

@@ -19,6 +19,7 @@ public class ContextModule {
     }
 
     @Provides
+    @TMDbAppScope
     public Context context() {
         return context;
     }

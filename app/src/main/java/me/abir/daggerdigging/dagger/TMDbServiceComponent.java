@@ -9,6 +9,7 @@ import me.abir.daggerdigging.network.TMDbService;
  * Created by Abir on 01-Jan-18.
  */
 
+@TMDbAppScope
 @Component(modules = {TMDbServiceModule.class, PicassoModule.class})
 public interface TMDbServiceComponent {
 

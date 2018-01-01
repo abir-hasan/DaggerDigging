@@ -17,6 +17,7 @@ import dagger.Provides;
 public class GsonModule {
 
     @Provides
+    @TMDbAppScope
     public Gson gson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DateTime.class, new DateTimeConverter());
