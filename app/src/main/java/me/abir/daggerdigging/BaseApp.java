@@ -16,19 +16,6 @@ import timber.log.Timber;
  */
 
 public class BaseApp extends Application {
-
-    //                       Activity
-
-    //          TMDbService                  Picasso
-
-    //      Retrofit                         OkHttp3Downloader
-
-    //GSON         OkHttp                 OkHttp
-
-    //         logger   Cache
-
-    //       Timber         File
-
     private TMDbService tmdbService;
     private Picasso picasso;
 
