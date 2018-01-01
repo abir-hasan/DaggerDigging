@@ -3,15 +3,13 @@ package me.abir.daggerdigging;
 import android.app.Activity;
 import android.app.Application;
 
-import com.fatboyindustrial.gsonjodatime.DateTimeConverter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
-import org.joda.time.DateTime;
-
+import me.abir.daggerdigging.dagger.ContextModule;
+import me.abir.daggerdigging.dagger.DaggerTMDbServiceComponent;
+import me.abir.daggerdigging.dagger.TMDbServiceComponent;
 import me.abir.daggerdigging.network.TMDbService;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 /**
  * Created by Abir on 28-Dec-17.
@@ -19,23 +17,34 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BaseApp extends Application {
 
+    //                       Activity
+
+    //          TMDbService                  Picasso
+
+    //      Retrofit                         OkHttp3Downloader
+
+    //GSON         OkHttp                 OkHttp
+
+    //         logger   Cache
+
+    //       Timber         File
+
     private TMDbService tmdbService;
+    private Picasso picasso;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DateTime.class, new DateTimeConverter());
+        Timber.plant(new Timber.DebugTree());
 
-        Gson gson = gsonBuilder.create();
-
-        Retrofit tmdbRetrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(TMDbService.BASE_URL_V3)
+        TMDbServiceComponent component = DaggerTMDbServiceComponent.builder()
+                // We only need to add this because it's the only external dependency
+                .contextModule(new ContextModule(this))
                 .build();
 
-        tmdbService = tmdbRetrofit.create(TMDbService.class);
+        tmdbService = component.getTMDbService();
+        picasso = component.getPicasso();
     }
 
     public static BaseApp get(Activity activity) {
@@ -44,5 +53,9 @@ public class BaseApp extends Application {
 
     public TMDbService getTMDbService() {
         return tmdbService;
+    }
+
+    public Picasso getPicasso() {
+        return picasso;
     }
 }
