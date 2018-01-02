@@ -18,7 +18,6 @@ import timber.log.Timber;
 @Module(includes = ContextModule.class)
 public class NetworkModule {
 
-
     @Provides
     @TMDbAppScope
     public HttpLoggingInterceptor loggingInterceptor() {

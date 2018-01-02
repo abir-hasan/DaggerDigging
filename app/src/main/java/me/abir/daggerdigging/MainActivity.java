@@ -2,6 +2,8 @@ package me.abir.daggerdigging;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import me.abir.daggerdigging.models.TopTvModel;
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TMDbService tmDbService;
     private Call<TopTvModel> responseCall;
+    private RecyclerView rvTvSeries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure() ");
             }
         });
+
+        initView();
+    }
+
+    private void initView() {
+        rvTvSeries = findViewById(R.id.rvTvSeries);
+        rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
+        rvTvSeries.setAdapter(new TvAdapter());
     }
 
     @Override
