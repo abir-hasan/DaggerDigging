@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.squareup.picasso.Picasso;
+
 import me.abir.daggerdigging.models.TopTvModel;
 import me.abir.daggerdigging.network.TMDbService;
 import retrofit2.Call;
@@ -16,14 +18,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private RecyclerView rvTvSeries;
     private TMDbService tmDbService;
     private Call<TopTvModel> responseCall;
-    private RecyclerView rvTvSeries;
+    private Picasso picasso;
+    private TvAdapter tvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        picasso = BaseApp.get(this).getPicasso();
 
         tmDbService = BaseApp.get(this).getTMDbService();
 
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<TopTvModel> call, Response<TopTvModel> response) {
                 Log.w(TAG, "onResponse() called with: call = [" + call + "]," +
                         " response = [" + response.body().getResults() + "]");
+                tvAdapter.setTVData(response.body().getResults());
             }
 
             @Override
@@ -48,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         rvTvSeries = findViewById(R.id.rvTvSeries);
         rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
-        rvTvSeries.setAdapter(new TvAdapter());
+        tvAdapter = new TvAdapter(this, picasso);
+        rvTvSeries.setAdapter(tvAdapter);
     }
 
     @Override

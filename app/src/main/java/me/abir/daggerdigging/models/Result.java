@@ -100,7 +100,7 @@ public class Result {
     }
 
     public String getFirstAirDate() {
-        return firstAirDate;
+        return firstAirDate.substring(0, 4);
     }
 
     public void setFirstAirDate(String firstAirDate) {

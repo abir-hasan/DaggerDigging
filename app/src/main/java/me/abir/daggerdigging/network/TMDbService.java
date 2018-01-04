@@ -11,7 +11,8 @@ import retrofit2.http.Query;
 
 public interface TMDbService {
 
-    public static final String BASE_URL_V3 = "https://api.themoviedb.org/3/";
+    String BASE_URL_V3 = "https://api.themoviedb.org/3/";
+    String POSTER_URL = "http://image.tmdb.org/t/p/w185/";
 
     //tv/top_rated?api_key={{api_key}}&language=en-US&page=1
     @GET("tv/top_rated")
