@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
+import me.abir.daggerdigging.dagger.activity_main.DaggerMainActivityComponent;
+import me.abir.daggerdigging.dagger.activity_main.MainActivityComponent;
+import me.abir.daggerdigging.dagger.activity_main.MainActivityModule;
 import me.abir.daggerdigging.models.TopTvModel;
 import me.abir.daggerdigging.network.TMDbService;
 import retrofit2.Call;
@@ -18,21 +21,22 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private MainActivityComponent mainActivityComponent;
     private RecyclerView rvTvSeries;
     private TMDbService tmDbService;
     private Call<TopTvModel> responseCall;
-    private Picasso picasso;
     private TvAdapter tvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initDependency();
+        initView();
+        getDataFromApi();
+    }
 
-        picasso = BaseApp.get(this).getPicasso();
-
-        tmDbService = BaseApp.get(this).getTMDbService();
-
+    private void getDataFromApi() {
         responseCall = tmDbService.getTopTvSeries("4ff569ef5e249f43e790c8e30cbee249",
                 "en-US", 1);
         responseCall.enqueue(new Callback<TopTvModel>() {
@@ -48,14 +52,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure() ");
             }
         });
+    }
 
-        initView();
+    private void initDependency() {
+        mainActivityComponent = DaggerMainActivityComponent.builder()
+                .mainActivityModule(new MainActivityModule(this))
+                .tMDbServiceComponent(BaseApp.get(this).tmDbServiceComponent())
+                .build();
+
+        tmDbService = mainActivityComponent.tmDbService();
     }
 
     private void initView() {
         rvTvSeries = findViewById(R.id.rvTvSeries);
         rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
-        tvAdapter = new TvAdapter(this, picasso);
+
+
+        tvAdapter = mainActivityComponent.tvAdapter();
         rvTvSeries.setAdapter(tvAdapter);
     }
 
