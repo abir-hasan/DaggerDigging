@@ -6,26 +6,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.squareup.picasso.Picasso;
+import java.util.List;
 
 import me.abir.daggerdigging.dagger.activity_main.DaggerMainActivityComponent;
 import me.abir.daggerdigging.dagger.activity_main.MainActivityComponent;
 import me.abir.daggerdigging.dagger.activity_main.MainActivityModule;
-import me.abir.daggerdigging.models.TopTvModel;
-import me.abir.daggerdigging.network.TMDbService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import me.abir.daggerdigging.models.Result;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainScreenContract.View {
 
     private static final String TAG = "MainActivity";
 
     private MainActivityComponent mainActivityComponent;
     private RecyclerView rvTvSeries;
-    private TMDbService tmDbService;
-    private Call<TopTvModel> responseCall;
     private TvAdapter tvAdapter;
+    private MainScreenContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,47 +31,34 @@ public class MainActivity extends AppCompatActivity {
         getDataFromApi();
     }
 
-    private void getDataFromApi() {
-        responseCall = tmDbService.getTopTvSeries("4ff569ef5e249f43e790c8e30cbee249",
-                "en-US", 1);
-        responseCall.enqueue(new Callback<TopTvModel>() {
-            @Override
-            public void onResponse(Call<TopTvModel> call, Response<TopTvModel> response) {
-                Log.w(TAG, "onResponse() called with: call = [" + call + "]," +
-                        " response = [" + response.body().getResults() + "]");
-                tvAdapter.setTVData(response.body().getResults());
-            }
-
-            @Override
-            public void onFailure(Call<TopTvModel> call, Throwable t) {
-                Log.e(TAG, "onFailure() ");
-            }
-        });
-    }
-
     private void initDependency() {
         mainActivityComponent = DaggerMainActivityComponent.builder()
                 .mainActivityModule(new MainActivityModule(this))
                 .tMDbServiceComponent(BaseApp.get(this).tmDbServiceComponent())
                 .build();
 
-        tmDbService = mainActivityComponent.tmDbService();
+        presenter = mainActivityComponent.getPresenter();
     }
 
     private void initView() {
         rvTvSeries = findViewById(R.id.rvTvSeries);
         rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
-
-
         tvAdapter = mainActivityComponent.tvAdapter();
         rvTvSeries.setAdapter(tvAdapter);
     }
 
+    private void getDataFromApi() {
+        presenter.populateData();
+    }
+
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (responseCall != null) {
-            responseCall.cancel();
-        }
+    public void showData(List<Result> resultList) {
+        tvAdapter.setTVData(resultList);
+    }
+
+    @Override
+    public void showErrorOnLoading() {
+        Log.d(TAG, "showErrorOnLoading() called");
     }
 }
