@@ -1,4 +1,4 @@
-package me.abir.daggerdigging.dagger;
+package me.abir.daggerdigging.dagger.rest;
 
 import com.squareup.picasso.Picasso;
 

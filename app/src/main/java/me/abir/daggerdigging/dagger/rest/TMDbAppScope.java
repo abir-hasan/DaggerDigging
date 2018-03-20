@@ -1,4 +1,4 @@
-package me.abir.daggerdigging.dagger;
+package me.abir.daggerdigging.dagger.rest;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

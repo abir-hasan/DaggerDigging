@@ -3,9 +3,9 @@ package me.abir.daggerdigging;
 import android.app.Activity;
 import android.app.Application;
 
-import me.abir.daggerdigging.dagger.ContextModule;
-import me.abir.daggerdigging.dagger.DaggerTMDbServiceComponent;
-import me.abir.daggerdigging.dagger.TMDbServiceComponent;
+import me.abir.daggerdigging.dagger.rest.ContextModule;
+import me.abir.daggerdigging.dagger.rest.DaggerTMDbServiceComponent;
+import me.abir.daggerdigging.dagger.rest.TMDbServiceComponent;
 import timber.log.Timber;
 
 /**

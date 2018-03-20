@@ -1,4 +1,4 @@
-package me.abir.daggerdigging.dagger;
+package me.abir.daggerdigging.dagger.rest;
 
 import com.fatboyindustrial.gsonjodatime.DateTimeConverter;
 import com.google.gson.Gson;
