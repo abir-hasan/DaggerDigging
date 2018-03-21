@@ -8,6 +8,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import me.abir.daggerdigging.dagger.activity_main.DaggerMainActivityComponent;
 import me.abir.daggerdigging.dagger.activity_main.MainActivityComponent;
 import me.abir.daggerdigging.dagger.activity_main.MainActivityModule;
@@ -19,8 +21,10 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
 
     private MainActivityComponent mainActivityComponent;
     private RecyclerView rvTvSeries;
-    private TvAdapter tvAdapter;
-    private MainScreenContract.Presenter presenter;
+    @Inject
+    TvAdapter tvAdapter;
+    @Inject
+    MainScreenContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +41,14 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
                 .tMDbServiceComponent(BaseApp.get(this).tmDbServiceComponent())
                 .build();
 
-        presenter = mainActivityComponent.getPresenter();
+        mainActivityComponent.inject(this);
+        //presenter = mainActivityComponent.getPresenter();
     }
 
     private void initView() {
         rvTvSeries = findViewById(R.id.rvTvSeries);
         rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
-        tvAdapter = mainActivityComponent.tvAdapter();
+        //tvAdapter = mainActivityComponent.tvAdapter();
         rvTvSeries.setAdapter(tvAdapter);
     }
 

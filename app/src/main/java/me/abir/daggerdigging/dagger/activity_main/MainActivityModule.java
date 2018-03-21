@@ -25,6 +25,12 @@ public class MainActivityModule {
 
     @Provides
     @MainActivityScope
+    public MainActivity getMainActivity(){
+        return this.mainActivity;
+    }
+
+    @Provides
+    @MainActivityScope
     public TvAdapter tvAdapter(Picasso picasso) {
         return new TvAdapter(mainActivity, picasso);
     }
