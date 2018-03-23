@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -35,6 +36,14 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
         getDataFromApi();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (presenter != null)
+            presenter.unSubscribeRx();
+
+    }
+
     private void initDependency() {
         mainActivityComponent = DaggerMainActivityComponent.builder()
                 .mainActivityModule(new MainActivityModule(this))
@@ -42,13 +51,11 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
                 .build();
 
         mainActivityComponent.inject(this);
-        //presenter = mainActivityComponent.getPresenter();
     }
 
     private void initView() {
         rvTvSeries = findViewById(R.id.rvTvSeries);
         rvTvSeries.setLayoutManager(new LinearLayoutManager(this));
-        //tvAdapter = mainActivityComponent.tvAdapter();
         rvTvSeries.setAdapter(tvAdapter);
     }
 
@@ -60,6 +67,11 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
     @Override
     public void showData(List<Result> resultList) {
         tvAdapter.setTVData(resultList);
+    }
+
+    @Override
+    public void showToastOnComplete() {
+        Toast.makeText(this, "Top series list served", Toast.LENGTH_SHORT).show();
     }
 
     @Override

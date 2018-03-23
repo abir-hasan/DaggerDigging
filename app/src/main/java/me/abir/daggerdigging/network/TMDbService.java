@@ -1,5 +1,7 @@
 package me.abir.daggerdigging.network;
 
+
+import io.reactivex.Observable;
 import me.abir.daggerdigging.models.TopTvModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,4 +21,9 @@ public interface TMDbService {
     Call<TopTvModel> getTopTvSeries(@Query("api_key") String apiKey,
                                     @Query("language") String language,
                                     @Query("page") int page);
+
+    @GET("tv/top_rated")
+    Observable<TopTvModel> getTopTvSeriesRx(@Query("api_key") String apiKey,
+                                            @Query("language") String language,
+                                            @Query("page") int page);
 }

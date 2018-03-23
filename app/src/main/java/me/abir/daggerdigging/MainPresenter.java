@@ -1,15 +1,16 @@
 package me.abir.daggerdigging;
 
-import android.util.Log;
-
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import me.abir.daggerdigging.models.Result;
 import me.abir.daggerdigging.models.TopTvModel;
 import me.abir.daggerdigging.network.TMDbService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by abirhasan on 3/20/18.
@@ -17,10 +18,10 @@ import retrofit2.Response;
 
 public class MainPresenter implements MainScreenContract.Presenter {
     private static final String TAG = "MainPresenter";
-    private Call<TopTvModel> responseCall;
     private TMDbService tmDbService;
     private MainScreenContract.View view;
-    private List<Result> modelResponse;
+    private final CompositeDisposable disposable = new CompositeDisposable();
+
 
     public MainPresenter(MainScreenContract.View view, TMDbService tmDbService) {
         this.view = view;
@@ -30,27 +31,47 @@ public class MainPresenter implements MainScreenContract.Presenter {
     @Override
     public void populateData() {
 
-        responseCall = tmDbService.getTopTvSeries("4ff569ef5e249f43e790c8e30cbee249",
+        disposable.add(getData()
+                .subscribeOn(Schedulers.io())
+                .map(new Function<TopTvModel, List<Result>>() {
+                    @Override
+                    public List<Result> apply(TopTvModel topTvModel) throws Exception {
+                        return topTvModel.getResults();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<Result>>() {
+                    @Override
+                    public void onNext(List<Result> results) {
+                        if (results != null) {
+                            view.showData(results);
+                        } else {
+                            view.showErrorOnLoading();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.showErrorOnLoading();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        view.showToastOnComplete();
+                    }
+                }));
+
+    }
+
+    @Override
+    public void unSubscribeRx() {
+        if (!disposable.isDisposed())
+            disposable.dispose();
+    }
+
+
+    Observable<TopTvModel> getData() {
+        return tmDbService.getTopTvSeriesRx("4ff569ef5e249f43e790c8e30cbee249",
                 "en-US", 1);
-        responseCall.enqueue(new Callback<TopTvModel>() {
-            @Override
-            public void onResponse(Call<TopTvModel> call, Response<TopTvModel> response) {
-                Log.w(TAG, "onResponse() called with: call = [" + call + "]," +
-                        " response = [" + response.body().getResults() + "]");
-                modelResponse = response.body().getResults();
-
-                if (modelResponse != null) {
-                    view.showData(modelResponse);
-                } else {
-                    view.showErrorOnLoading();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TopTvModel> call, Throwable t) {
-                view.showErrorOnLoading();
-            }
-        });
-
     }
 }
