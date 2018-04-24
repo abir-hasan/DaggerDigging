@@ -20,6 +20,7 @@ public class MainPresenter implements MainScreenContract.Presenter {
     private static final String TAG = "MainPresenter";
     private TMDbService tmDbService;
     private MainScreenContract.View view;
+    private int pageCount = 1;
     private final CompositeDisposable disposable = new CompositeDisposable();
 
 
@@ -31,7 +32,7 @@ public class MainPresenter implements MainScreenContract.Presenter {
     @Override
     public void populateData() {
 
-        disposable.add(getData()
+        disposable.add(getData(pageCount)
                 .subscribeOn(Schedulers.io())
                 .map(new Function<TopTvModel, List<Result>>() {
                     @Override
@@ -57,6 +58,7 @@ public class MainPresenter implements MainScreenContract.Presenter {
 
                     @Override
                     public void onComplete() {
+                        pageCount++;
                         view.showToastOnComplete();
                     }
                 }));
@@ -70,8 +72,8 @@ public class MainPresenter implements MainScreenContract.Presenter {
     }
 
 
-    Observable<TopTvModel> getData() {
+    Observable<TopTvModel> getData(int pageNo) {
         return tmDbService.getTopTvSeriesRx("4ff569ef5e249f43e790c8e30cbee249",
-                "en-US", 1);
+                "en-US", pageNo);
     }
 }

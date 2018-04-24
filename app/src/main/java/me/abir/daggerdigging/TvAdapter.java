@@ -25,6 +25,7 @@ public class TvAdapter extends RecyclerView.Adapter {
     private Context context;
     private Picasso picasso;
     private List<Result> results = new ArrayList<>();
+    private List<Result> copyList = new ArrayList<>();
 
     public TvAdapter(Context context, Picasso picasso) {
         this.context = context;
@@ -81,8 +82,27 @@ public class TvAdapter extends RecyclerView.Adapter {
     }
 
     public void setTVData(List<Result> resultList) {
-        this.results.clear();
+        //this.results.clear();
+        //this.copyList.clear();
         results.addAll(resultList);
+        copyList.addAll(resultList);
         notifyDataSetChanged();
     }
+
+    public void filter(String queryText) {
+        results.clear();
+
+        if (queryText.isEmpty()) {
+            results.addAll(copyList);
+        } else {
+
+            for (Result result : copyList) {
+                if (result.getName().toLowerCase().contains(queryText.toLowerCase())) {
+                    results.add(result);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 }
