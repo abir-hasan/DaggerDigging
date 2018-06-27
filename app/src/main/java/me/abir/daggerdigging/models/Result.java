@@ -4,18 +4,46 @@ package me.abir.daggerdigging.models;
  * Created by Abir on 28-Dec-17.
  */
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Entity(tableName = "result")
 public class Result {
+
+
+    /*@PrimaryKey(autoGenerate = true)
+    private int pkid;
+
+    public int getPkid() {
+        return pkid;
+    }
+
+    public void setPkid(int pkid) {
+        this.pkid = pkid;
+    }*/
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    private int pageNo;
 
     @SerializedName("original_name")
     @Expose
     private String originalName;
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private List<Integer> genreIds = null;
     @SerializedName("name")
     @Expose
@@ -25,6 +53,7 @@ public class Result {
     private Double popularity;
     @SerializedName("origin_country")
     @Expose
+    @Ignore
     private List<String> originCountry = null;
     @SerializedName("vote_count")
     @Expose
@@ -40,6 +69,7 @@ public class Result {
     private String originalLanguage;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Integer id;
     @SerializedName("vote_average")
     @Expose
@@ -100,7 +130,7 @@ public class Result {
     }
 
     public String getFirstAirDate() {
-        return firstAirDate.substring(0, 4);
+        return firstAirDate!=null? firstAirDate.substring(0, 4): "";
     }
 
     public void setFirstAirDate(String firstAirDate) {
@@ -168,5 +198,37 @@ public class Result {
                 ", voteAverage=" + voteAverage +
                 ", posterPath='" + posterPath + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Result result = (Result) o;
+
+        if (originalName != null ? !originalName.equals(result.originalName) : result.originalName != null)
+            return false;
+        if (genreIds != null ? !genreIds.equals(result.genreIds) : result.genreIds != null)
+            return false;
+        if (name != null ? !name.equals(result.name) : result.name != null) return false;
+        if (popularity != null ? !popularity.equals(result.popularity) : result.popularity != null)
+            return false;
+        if (originCountry != null ? !originCountry.equals(result.originCountry) : result.originCountry != null)
+            return false;
+        if (voteCount != null ? !voteCount.equals(result.voteCount) : result.voteCount != null)
+            return false;
+        if (firstAirDate != null ? !firstAirDate.equals(result.firstAirDate) : result.firstAirDate != null)
+            return false;
+        if (backdropPath != null ? !backdropPath.equals(result.backdropPath) : result.backdropPath != null)
+            return false;
+        if (originalLanguage != null ? !originalLanguage.equals(result.originalLanguage) : result.originalLanguage != null)
+            return false;
+        if (id != null ? !id.equals(result.id) : result.id != null) return false;
+        if (voteAverage != null ? !voteAverage.equals(result.voteAverage) : result.voteAverage != null)
+            return false;
+        if (overview != null ? !overview.equals(result.overview) : result.overview != null)
+            return false;
+        return posterPath != null ? posterPath.equals(result.posterPath) : result.posterPath == null;
     }
 }

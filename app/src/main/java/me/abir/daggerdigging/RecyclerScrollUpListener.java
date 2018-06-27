@@ -9,7 +9,7 @@ public abstract class RecyclerScrollUpListener extends RecyclerView.OnScrollList
     private static final String TAG = "RecyclerScrollUpListene";
     // The minimum amount of items to have above your current scroll position
     // before loading more.
-    private static final int visibleThreshold = 2;
+    private static final int visibleThreshold = 15;
     // The current offset index of data you have loaded
     private int currentPage = 0;
     // The total number of items in the data set after the last load

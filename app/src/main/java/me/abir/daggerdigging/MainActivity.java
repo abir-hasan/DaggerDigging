@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -100,8 +101,9 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
         rvTvSeries.addOnScrollListener(new RecyclerScrollUpListener(manager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                //Log.w(TAG, "onLoadMore() called with: page = [" + page + "], totalItemsCount = [" + totalItemsCount + "]");
+                Log.w(TAG, "onLoadMore() called with: page = [" + page + "], totalItemsCount = [" + totalItemsCount + "]");
                 if (!isSearched) {
+                    //presenter.getDbUpdate();
                     getDataFromApi();
                 } else {
                     Log.w(TAG, "onLoadMore() On going search. won't load more tv series!");
@@ -111,13 +113,30 @@ public class MainActivity extends AppCompatActivity implements MainScreenContrac
     }
 
     private void getDataFromApi() {
-        presenter.populateData();
+        //presenter.populateData();
+        presenter.getDbUpdate();
     }
 
 
     @Override
     public void showData(List<Result> resultList) {
+        Log.v(TAG, "showData() called with: resultList = [" + resultList + "]");
         tvAdapter.setTVData(resultList);
+        /*tvAdapter.setTVData(getresults(page));
+        page+=100;*/
+    }
+
+
+
+    private List<Result> getresults(int start){
+        List<Result> results = new ArrayList<>();
+        for (int i=start; i<start+100;i++){
+            Result r = new Result();
+            r.setId(i);
+            r.setName(String.valueOf(i));
+            results.add(r);
+        }
+        return results;
     }
 
     @Override
