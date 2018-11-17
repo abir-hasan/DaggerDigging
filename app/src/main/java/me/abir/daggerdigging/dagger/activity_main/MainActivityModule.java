@@ -8,6 +8,7 @@ import me.abir.daggerdigging.MainActivity;
 import me.abir.daggerdigging.MainPresenter;
 import me.abir.daggerdigging.MainScreenContract;
 import me.abir.daggerdigging.TvAdapter;
+import me.abir.daggerdigging.db.AppDatabase;
 import me.abir.daggerdigging.network.TMDbService;
 
 /**
@@ -25,7 +26,7 @@ public class MainActivityModule {
 
     @Provides
     @MainActivityScope
-    public MainActivity getMainActivity(){
+    public MainActivity getMainActivity() {
         return this.mainActivity;
     }
 
@@ -37,8 +38,14 @@ public class MainActivityModule {
 
     @Provides
     @MainActivityScope
-    public MainScreenContract.Presenter getMainScreenPresent(TMDbService tmDbService) {
-        return new MainPresenter(mainActivity, tmDbService);
+    public MainScreenContract.Presenter getMainScreenPresent(TMDbService tmDbService, AppDatabase database) {
+        return new MainPresenter(mainActivity, tmDbService, database);
+    }
+
+    @Provides
+    @MainActivityScope
+    public AppDatabase getDatabase() {
+        return AppDatabase.getDatabase(mainActivity.getApplicationContext());
     }
 
 }

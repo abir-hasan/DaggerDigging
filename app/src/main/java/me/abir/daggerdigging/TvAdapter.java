@@ -1,17 +1,22 @@
 package me.abir.daggerdigging;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import me.abir.daggerdigging.models.Result;
 import me.abir.daggerdigging.network.TMDbService;
@@ -20,30 +25,33 @@ import me.abir.daggerdigging.network.TMDbService;
  * Created by Abir on 02-Jan-18.
  */
 
-public class TvAdapter extends RecyclerView.Adapter {
-
+public class TvAdapter extends android.support.v7.recyclerview.extensions.ListAdapter<Result, TvAdapter.TvViewHolder>/*RecyclerView.Adapter<TvAdapter.TvViewHolder>*/ {
+    private static final String TAG = "TvAdapter";
     private Context context;
     private Picasso picasso;
     private List<Result> results = new ArrayList<>();
     private List<Result> copyList = new ArrayList<>();
 
     public TvAdapter(Context context, Picasso picasso) {
+        super(UserDiffCallback);
         this.context = context;
         this.picasso = picasso;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_tv, parent, false);
         return new TvViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TvViewHolder tvViewHolder = (TvViewHolder) holder;
-        Result result = results.get(position);
+    public void onBindViewHolder(TvViewHolder tvViewHolder, int position) {
+        Log.e(TAG, "onBindViewHolder()  position = [" + position + "]");
+        //TvViewHolder tvViewHolder = (TvViewHolder) holder;
+        Result result = getItem(position);
+        //Result result = results.get(position);
 
-        tvViewHolder.tvName.setText(result.getName());
+        tvViewHolder.tvName.setText(String.valueOf(result.getPageNo()) + result.getName());
         tvViewHolder.tvYear.setText(result.getFirstAirDate());
         tvViewHolder.tvRating.setText(result.getVoteAverage().toString());
         tvViewHolder.tvCount.setText(result.getVoteCount().toString());
@@ -57,10 +65,10 @@ public class TvAdapter extends RecyclerView.Adapter {
 
     }
 
-    @Override
+    /*@Override
     public int getItemCount() {
         return results.size();
-    }
+    }*/
 
 
     class TvViewHolder extends RecyclerView.ViewHolder {
@@ -82,11 +90,17 @@ public class TvAdapter extends RecyclerView.Adapter {
     }
 
     public void setTVData(List<Result> resultList) {
+        Log.w(TAG, "setTVData() called with: resultList = [" + resultList.size() + "] prev: " + super.getItemCount());
         //this.results.clear();
         //this.copyList.clear();
+        //results.addAll(resultList);
+        //copyList.addAll(resultList);
+        //notifyDataSetChanged();
+
+
         results.addAll(resultList);
-        copyList.addAll(resultList);
-        notifyDataSetChanged();
+        submitList(results);
+
     }
 
     public void filter(String queryText) {
@@ -102,7 +116,24 @@ public class TvAdapter extends RecyclerView.Adapter {
                 }
             }
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
+        submitList(results);
     }
+
+    private static DiffUtil.ItemCallback<Result> UserDiffCallback = new DiffUtil.ItemCallback<Result>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Result oldItem, @NonNull Result newItem) {
+            Log.i(TAG, "areItemsTheSame() called with: oldItem = [" + oldItem.getId() +
+                    "], newItem = [" + newItem.getId() + "] res: " + oldItem.getId().equals(newItem.getId())
+                    + " same? " + oldItem.equals(newItem));
+            return oldItem.getId().equals(newItem.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Result oldItem, @NonNull Result newItem) {
+            Log.w(TAG, "areContentsTheSame() called with: oldItem = [" + oldItem + "], newItem = [" + newItem + "]");
+            return oldItem.equals(newItem);
+        }
+    };
 
 }

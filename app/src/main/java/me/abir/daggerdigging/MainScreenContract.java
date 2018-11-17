@@ -19,5 +19,6 @@ public interface MainScreenContract {
     interface Presenter {
         void populateData();
         void unSubscribeRx();
+        void getDbUpdate();
     }
 }
