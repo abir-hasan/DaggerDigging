@@ -1,8 +1,7 @@
 package me.abir.daggerdigging;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class RecyclerScrollUpListener extends RecyclerView.OnScrollListener {
 
