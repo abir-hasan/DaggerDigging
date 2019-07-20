@@ -31,7 +31,7 @@ public class TMDbServiceModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
-                .baseUrl(TMDbService.BASE_URL_V3)
+                .baseUrl(TMDbService.Companion.getBASE_URL_V3())
                 .build();
     }
 }

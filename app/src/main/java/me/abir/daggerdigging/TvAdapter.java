@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ListAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,7 @@ import me.abir.daggerdigging.network.TMDbService;
  * Created by Abir on 02-Jan-18.
  */
 
-public class TvAdapter extends androidx.recyclerview.widget.ListAdapter<Result, TvAdapter.TvViewHolder>/*RecyclerView.Adapter<TvAdapter.TvViewHolder>*/ {
+public class TvAdapter extends ListAdapter<Result, TvAdapter.TvViewHolder>/*RecyclerView.Adapter<TvAdapter.TvViewHolder>*/ {
     private static final String TAG = "TvAdapter";
     private Context context;
     private Picasso picasso;
@@ -54,7 +55,7 @@ public class TvAdapter extends androidx.recyclerview.widget.ListAdapter<Result, 
         tvViewHolder.tvRating.setText(result.getVoteAverage().toString());
         tvViewHolder.tvCount.setText(result.getVoteCount().toString());
 
-        String posterPath = TMDbService.POSTER_URL + result.getPosterPath();
+        String posterPath = TMDbService.Companion.getPOSTER_URL() + result.getPosterPath();
         Log.i(TAG, "onBindViewHolder: posterPath: "+posterPath);
         Picasso.get().load(posterPath)
                 .fit()
