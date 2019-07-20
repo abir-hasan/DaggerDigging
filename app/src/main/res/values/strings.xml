@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DaggerDigging</string>
     <string name="search_series">Search Series</string>
+    <string name="text_something_went_wrong">Something went wrong</string>
 </resources>

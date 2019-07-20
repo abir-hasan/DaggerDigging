@@ -1,22 +1,21 @@
 package me.abir.daggerdigging;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ListAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import me.abir.daggerdigging.models.Result;
 import me.abir.daggerdigging.network.TMDbService;
@@ -25,7 +24,7 @@ import me.abir.daggerdigging.network.TMDbService;
  * Created by Abir on 02-Jan-18.
  */
 
-public class TvAdapter extends android.support.v7.recyclerview.extensions.ListAdapter<Result, TvAdapter.TvViewHolder>/*RecyclerView.Adapter<TvAdapter.TvViewHolder>*/ {
+public class TvAdapter extends ListAdapter<Result, TvAdapter.TvViewHolder>/*RecyclerView.Adapter<TvAdapter.TvViewHolder>*/ {
     private static final String TAG = "TvAdapter";
     private Context context;
     private Picasso picasso;
@@ -51,13 +50,14 @@ public class TvAdapter extends android.support.v7.recyclerview.extensions.ListAd
         Result result = getItem(position);
         //Result result = results.get(position);
 
-        tvViewHolder.tvName.setText(String.valueOf(result.getPageNo()) + result.getName());
+        tvViewHolder.tvName.setText(result.getPageNo() + result.getName());
         tvViewHolder.tvYear.setText(result.getFirstAirDate());
         tvViewHolder.tvRating.setText(result.getVoteAverage().toString());
         tvViewHolder.tvCount.setText(result.getVoteCount().toString());
 
-        String posterPath = TMDbService.POSTER_URL + result.getPosterPath();
-        picasso.with(context).load(posterPath)
+        String posterPath = TMDbService.Companion.getPOSTER_URL() + result.getPosterPath();
+        Log.i(TAG, "onBindViewHolder: posterPath: "+posterPath);
+        Picasso.get().load(posterPath)
                 .fit()
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.drawable.ic_launcher_foreground)
